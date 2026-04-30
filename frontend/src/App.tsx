@@ -1,0 +1,236 @@
+import { useState, useRef, useEffect } from 'react';
+import { Sidebar } from './components/Sidebar';
+import { Toolbar } from './components/Toolbar';
+import { Editor } from './components/Editor';
+import { Modal } from './components/Modal';
+import { ReadFile, SaveFile } from '../wailsjs/go/main/App';
+
+function App() {
+  const [workspaceRoot, setWorkspaceRoot] = useState('');
+  const [activeFile, setActiveFile] = useState<string | null>(null);
+  const [content, setContent] = useState('');
+  const [autoSave, setAutoSave] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [syncScroll, setSyncScroll] = useState(true);
+  
+  // Modal state
+  const [modal, setModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+    type: 'alert' | 'confirm';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'alert'
+  });
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  // Auto-save logic
+  useEffect(() => {
+    if (!autoSave || !activeFile) return;
+
+    const timer = setTimeout(() => {
+      handleSave(true);
+    }, 1000); // Auto-save after 1 second of inactivity
+
+    return () => clearTimeout(timer);
+  }, [content, autoSave, activeFile]);
+
+  const showAlert = (title: string, message: string) => {
+    setModal({ isOpen: true, title, message, type: 'alert' });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setModal({ isOpen: true, title, message, onConfirm, type: 'confirm' });
+  };
+
+  const handleFileSelect = async (path: string) => {
+    if (path.toLowerCase().endsWith('.md')) {
+      try {
+        const fileContent = await ReadFile(path);
+        setActiveFile(path);
+        setContent(fileContent);
+      } catch (err) {
+        showAlert("Error", "Could not read file.");
+        console.error("Error reading file:", err);
+      }
+    }
+  };
+
+  const handleFileRename = (oldPath: string, newPath: string) => {
+    if (activeFile === oldPath) {
+      setActiveFile(newPath);
+    }
+  };
+
+  const handleFileDelete = (path: string) => {
+    if (activeFile === path) {
+      setActiveFile(null);
+      setContent('');
+    }
+  };
+
+  const handleSave = async (isAuto = false) => {
+    if (activeFile) {
+      try {
+        if (isAuto) setIsAutoSaving(true);
+        else setIsSaving(true);
+
+        await SaveFile(activeFile, content);
+        
+        setTimeout(() => {
+          setIsSaving(false);
+          setIsAutoSaving(false);
+        }, 2000);
+      } catch (err) {
+        showAlert("Save Error", "Failed to save file.");
+        console.error("Error saving file:", err);
+        setIsSaving(false);
+        setIsAutoSaving(false);
+      }
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!activeFile) return;
+    window.print();
+  };
+
+  const handleFormat = (type: string) => {
+    if (!textareaRef.current) return;
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    let newText = '';
+    let cursorOffset = 0;
+
+    switch (type) {
+      case 'bold': 
+        newText = `**${selectedText}**`; 
+        cursorOffset = selectedText ? newText.length : 2;
+        break;
+      case 'italic': 
+        newText = `*${selectedText}*`; 
+        cursorOffset = selectedText ? newText.length : 1;
+        break;
+      case 'h1': 
+        newText = `\n# ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'h2': 
+        newText = `\n## ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'h3': 
+        newText = `\n### ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'ul': 
+        newText = `\n- ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'ol': 
+        newText = `\n1. ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'todo': 
+        newText = `\n- [ ] ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'quote': 
+        newText = `\n> ${selectedText}`; 
+        cursorOffset = newText.length;
+        break;
+      case 'code': 
+        newText = `\`\`\`\n${selectedText}\n\`\`\``; 
+        cursorOffset = selectedText ? newText.length : 4;
+        break;
+      default: return;
+    }
+
+    const updatedContent = content.substring(0, start) + newText + content.substring(end);
+    setContent(updatedContent);
+    
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + cursorOffset, start + cursorOffset);
+    }, 0);
+  };
+
+  return (
+    <div className="flex h-screen w-screen overflow-hidden bg-white text-[#242424] font-sans antialiased">
+      <div className="no-print h-full">
+        <Sidebar 
+          workspaceRoot={workspaceRoot} 
+          setWorkspaceRoot={setWorkspaceRoot} 
+          onFileSelect={handleFileSelect} 
+          onFileRename={handleFileRename} 
+          onFileDelete={handleFileDelete}
+          showConfirm={showConfirm}
+        />
+      </div>
+      
+      <div className="flex-grow flex flex-col overflow-hidden">
+        <div className="no-print">
+          <Toolbar 
+            onFormat={handleFormat} 
+            onSave={handleSave} 
+            onPrint={handlePrint}
+            activeFile={activeFile} 
+            autoSave={autoSave}
+            setAutoSave={setAutoSave}
+            isSaving={isSaving}
+            isAutoSaving={isAutoSaving}
+            syncScroll={syncScroll}
+            setSyncScroll={setSyncScroll}
+          />
+        </div>
+        
+        {activeFile ? (
+          <Editor 
+            content={content} 
+            setContent={setContent} 
+            textareaRef={textareaRef} 
+            previewRef={previewRef}
+            syncScroll={syncScroll}
+          />
+        ) : (
+          <div className="flex-grow flex items-center justify-center bg-white text-[#242424] flex-col p-12 select-none no-print">
+            <div className="border-[12px] border-[#242424] p-12 text-center inline-flex items-center space-x-12">
+                <img src="/icon.png" className='max-h-32 aspect-square' />
+                <div>
+                    <h1 className="welcome font-black mb-6 tracking-tighter leading-none">
+                        <span className='serif text-5xl opacity-50'>Archivum</span><br/>
+                        <span className='sans text-7xl text-[#242424]'>Markdown</span>
+                    </h1>
+                    <div className="h-2 bg-[#242424] w-24 mx-auto mb-6"></div>
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-bold leading-loose text-gray-400">
+                        Open a workspace to begin<br/>archiving your thoughts.
+                    </p>
+                </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Modal 
+        isOpen={modal.isOpen}
+        title={modal.title}
+        message={modal.message}
+        onConfirm={modal.onConfirm}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        type={modal.type}
+      />
+    </div>
+  );
+}
+
+export default App;
