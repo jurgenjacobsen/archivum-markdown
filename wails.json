@@ -10,7 +10,7 @@
         "name": "Jürgen Jacobsen",
         "email": "jurgenjacobsen@outlook.com"
     },
-    "description": "",
+    "description": "A high-performance desktop Markdown editor built with Wails, Go, React, and TypeScript.",
     "info": {
         "company": "Archivum",
         "product": "Archivum Markdown",

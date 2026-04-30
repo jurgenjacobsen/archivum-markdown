@@ -1,21 +1,56 @@
 ![Archivum Markdown - Banner](/frontend/public/banner.png)
 
 # Archivum Markdown
+**Archivum Markdown** is a high-performance desktop Markdown editor designed for speed, simplicity, and focus. Built with Wails, it combines the power of Go with the flexibility of React and TypeScript to provide a seamless writing experience.
 
-## About
+## Key Features
+- **Workspace Integration:** Open any folder as a workspace and navigate your files with an integrated sidebar.
+- **Live Preview:** Real-time Markdown rendering as you type.
+- **Synchronized Scrolling:** Keep your editor and preview perfectly in sync.
+- **Rich Formatting:** Quick access to common Markdown syntax (Headers, Lists, Checklists, Code Blocks, etc.).
+- **Auto-Save:** Focus on writing while Archivum ensures your progress is safely stored.
+- **File Management:** Create, rename, and delete files and directories directly within the app.
+- **Print Support:** Easily export your documents to PDF or print them.
+- **Fast & Lightweight:** Native performance with a modern, distraction-free interface.
 
-This is the official Wails React-TS template.
+## Tech Stack
+- **Backend:** [Go](https://go.dev/) with [Wails](https://wails.io/)
+- **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [Tailwind CSS](https://tailwindcss.com/)
+- **State Management:** React Hooks
+- **Icons & Assets:** Custom branding by Archivum
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Getting Started
+### Prerequisites
 
-## Live Development
+- [Go](https://go.dev/dl/) (v1.23+)
+- [Node.js](https://nodejs.org/) & [NPM](https://www.npmjs.com/)
+- [Wails CLI](https://wails.io/docs/gettingstarted/installation)
 
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+### Live Development
+To run in live development mode, run the following command in the project directory:
 
-## Building
+```bash
+wails dev
+```
 
-To build a redistributable, production mode package, use `wails build`.
+This will start a Vite development server for the frontend and recompile the Go backend on changes.
+
+### Building
+To build a redistributable, production-ready package:
+
+```bash
+wails build
+```
+
+The resulting binary will be located in the `build/bin` directory.
+
+## Project Structure
+
+- `app.go`: Main backend logic and Go-to-Frontend bindings.
+- `main.go`: Application entry point and configuration.
+- `frontend/`: React-based user interface.
+- `wails.json`: Project configuration and metadata.
+
+## License
+
+Copyright (c) 2025 Archivum. All rights reserved.
