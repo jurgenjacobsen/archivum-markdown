@@ -39,14 +39,25 @@ jobs:
         with:
           build-name: 'ArchivumMarkdown'
           build-platform: ${{ matrix.build.platform }}
-          package: true
+          package: false
+
+      - name: Package macOS App
+        if: matrix.build.os == 'macos-latest'
+        run: |
+          cd build/bin
+          zip -r ArchivumMarkdown.app.zip ArchivumMarkdown.app
 
       - name: Upload to Draft Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/bin/*
+          files: |
+            build/bin/ArchivumMarkdown.exe
+            build/bin/ArchivumMarkdown.app.zip
+            build/bin/ArchivumMarkdown
+          fail_on_unmatched_files: false
           draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
