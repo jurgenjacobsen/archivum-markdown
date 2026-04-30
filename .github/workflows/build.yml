@@ -40,3 +40,13 @@ jobs:
           build-name: 'ArchivumMarkdown'
           build-platform: ${{ matrix.build.platform }}
           package: true
+
+      - name: Upload to Draft Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/bin/*
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

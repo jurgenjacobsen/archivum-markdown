@@ -58,4 +58,4 @@ The resulting binary will be located in the `build/bin` directory.
 
 ## License
 
-Copyright (c) 2025 Archivum. All rights reserved.
+Copyright (c) 2026 Archivum. All rights reserved.
