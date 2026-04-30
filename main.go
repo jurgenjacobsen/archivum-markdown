@@ -16,7 +16,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Markdown Archivum",
+		Title:  "Archivum Markdown",
         
 		MinWidth:  1024,
 		MinHeight: 768,
