@@ -4,6 +4,7 @@
 [![wakatime](https://wakatime.com/badge/user/010adc07-6382-419f-87bc-0b3f507ee495/project/fb303ffe-8258-4dcc-bfc9-e34da048aafb.svg)](https://wakatime.com/badge/user/010adc07-6382-419f-87bc-0b3f507ee495/project/fb303ffe-8258-4dcc-bfc9-e34da048aafb)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jurgenjacobsen/archivum-markdown/main)
 ![GitHub top language](https://img.shields.io/github/languages/top/jurgenjacobsen/archivum-markdown)
+![GitHub repo size](https://img.shields.io/github/repo-size/jurgenjacobsen/archivum-markdown)
 
 # Archivum Markdown
 **Archivum Markdown** is a high-performance desktop Markdown editor designed for speed, simplicity, and focus. Built with Wails, it combines the power of Go with the flexibility of React and TypeScript to provide a seamless writing experience.
