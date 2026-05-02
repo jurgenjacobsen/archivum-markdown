@@ -18,6 +18,10 @@ export function GetDirectoryLevel(arg1) {
   return window['go']['main']['App']['GetDirectoryLevel'](arg1);
 }
 
+export function GetSettings(arg1) {
+  return window['go']['main']['App']['GetSettings'](arg1);
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
@@ -36,4 +40,8 @@ export function Rename(arg1, arg2) {
 
 export function SaveFile(arg1, arg2) {
   return window['go']['main']['App']['SaveFile'](arg1, arg2);
+}
+
+export function SaveSettings(arg1, arg2) {
+  return window['go']['main']['App']['SaveSettings'](arg1, arg2);
 }

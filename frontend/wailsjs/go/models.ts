@@ -16,6 +16,20 @@ export namespace main {
 	        this.isDir = source["isDir"];
 	    }
 	}
+	export class Settings {
+	    autoSave: boolean;
+	    syncScroll: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.autoSave = source["autoSave"];
+	        this.syncScroll = source["syncScroll"];
+	    }
+	}
 
 }
 

@@ -10,6 +10,8 @@ export function Delete(arg1:string):Promise<void>;
 
 export function GetDirectoryLevel(arg1:string):Promise<Array<main.FileNode>>;
 
+export function GetSettings(arg1:string):Promise<main.Settings>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function OpenWorkspaceDialog():Promise<string>;
@@ -19,3 +21,5 @@ export function ReadFile(arg1:string):Promise<string>;
 export function Rename(arg1:string,arg2:string):Promise<void>;
 
 export function SaveFile(arg1:string,arg2:string):Promise<void>;
+
+export function SaveSettings(arg1:main.Settings,arg2:string):Promise<void>;

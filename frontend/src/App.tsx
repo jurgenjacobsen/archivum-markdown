@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
 import { Modal } from './components/Modal';
-import { ReadFile, SaveFile } from '../wailsjs/go/main/App';
+import { ReadFile, SaveFile, GetSettings, SaveSettings } from '../wailsjs/go/main/App';
 
 function App() {
   const [workspaceRoot, setWorkspaceRoot] = useState('');
@@ -13,6 +13,38 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
+
+  // Load settings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await GetSettings(workspaceRoot);
+        setAutoSave(settings.autoSave);
+        setSyncScroll(settings.syncScroll);
+      } catch (err) {
+        console.error("Error loading settings:", err);
+      }
+    };
+    loadSettings();
+  }, [workspaceRoot]);
+
+  const handleSetAutoSave = async (value: boolean) => {
+    setAutoSave(value);
+    try {
+      await SaveSettings({ autoSave: value, syncScroll }, workspaceRoot);
+    } catch (err) {
+      console.error("Error saving settings:", err);
+    }
+  };
+
+  const handleSetSyncScroll = async (value: boolean) => {
+    setSyncScroll(value);
+    try {
+      await SaveSettings({ autoSave, syncScroll: value }, workspaceRoot);
+    } catch (err) {
+      console.error("Error saving settings:", err);
+    }
+  };
   
   // Modal state
   const [modal, setModal] = useState<{
@@ -186,11 +218,11 @@ function App() {
             onPrint={handlePrint}
             activeFile={activeFile} 
             autoSave={autoSave}
-            setAutoSave={setAutoSave}
+            setAutoSave={handleSetAutoSave}
             isSaving={isSaving}
             isAutoSaving={isAutoSaving}
             syncScroll={syncScroll}
-            setSyncScroll={setSyncScroll}
+            setSyncScroll={handleSetSyncScroll}
           />
         </div>
         

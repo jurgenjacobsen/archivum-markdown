@@ -15,7 +15,29 @@
     "info": {
         "company": "Archivum",
         "product": "Archivum Markdown",
-        "version": "1.0.0",
-        "copyright": "Copyright (c) 2025 Archivum. All rights reserved."
+        "name": "Archivum Markdown",
+        "description": "A high-performance desktop Markdown editor built with Wails, Go, React, and TypeScript.",
+        "category": "Editor",
+        "version": "1.0.2",
+        "copyright": "Copyright (c) 2025 Archivum. All rights reserved.",
+        "author": "Jürgen Jacobsen",
+        "website": "https://jurgen.fyi/projects",
+        "license": "AGPL-3.0",
+        "fileAssociations": [
+            {
+                "ext": "md",
+                "name": "Markdown Document",
+                "description": "Markdown Document",
+                "role": "editor",
+                "iconName": "appIcon"
+            },
+            {
+                "ext": "markdown",
+                "name": "Markdown Document",
+                "description": "Markdown Document",
+                "role": "editor",
+                "iconName": "appIcon"
+            }
+        ]
     }
 }
