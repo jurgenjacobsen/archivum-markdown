@@ -18,7 +18,7 @@ jobs:
           - platform: 'linux/amd64'
             os: 'ubuntu-22.04'
           - platform: 'windows/amd64'
-            os: 'windows-latest'
+            os: 'windows-2022'
           - platform: 'darwin/universal'
             os: 'macos-latest'
 
@@ -48,9 +48,14 @@ jobs:
 
       - name: Install Windows Dependencies (NSIS)
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
           choco install nsis -y
-          echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
+          "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Verify Makensis
+        if: runner.os == 'Windows'
+        run: makensis /VERSION
 
       - name: Build Windows
         if: runner.os == 'Windows'
@@ -61,6 +66,8 @@ jobs:
           $installer = Get-ChildItem -Path build/bin -Filter "*installer.exe" | Select-Object -First 1
           if ($installer) {
             Move-Item -Path $installer.FullName -Destination "build/bin/ArchivumMarkdown-Installer.exe" -Force
+          } else {
+            Write-Error "Installer not found in build/bin after NSIS build"
           }
 
       - name: Build MacOS
