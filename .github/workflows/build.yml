@@ -16,7 +16,7 @@ jobs:
       matrix:
         build:
           - platform: 'linux/amd64'
-            os: 'ubuntu-latest'
+            os: 'ubuntu-22.04'
           - platform: 'windows/amd64'
             os: 'windows-latest'
           - platform: 'darwin/universal'
@@ -44,27 +44,29 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev build-essential
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev build-essential
+
+      - name: Install Windows Dependencies (NSIS)
+        if: runner.os == 'Windows'
+        run: |
+          choco install nsis -y
+          echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
 
       - name: Build Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           wails build -platform windows/amd64 -nsis
-          # In Wails v2, the installer is usually named [ProjectName]-amd64-installer.exe
-          # We search for it and rename it to a clean name
+          # Rename for a clean download name
           $installer = Get-ChildItem -Path build/bin -Filter "*installer.exe" | Select-Object -First 1
           if ($installer) {
             Move-Item -Path $installer.FullName -Destination "build/bin/ArchivumMarkdown-Installer.exe" -Force
-          } else {
-            Write-Error "Installer not found in build/bin"
           }
 
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: |
           wails build -platform darwin/universal
-          # Wails creates ArchivumMarkdown.app in build/bin
           npm install -g create-dmg
           create-dmg build/bin/ArchivumMarkdown.app build/bin/ || true
           mv build/bin/*.dmg build/bin/ArchivumMarkdown.dmg || true
@@ -72,8 +74,7 @@ jobs:
       - name: Build Linux
         if: runner.os == 'Linux'
         run: |
-          # Use webkit2gtk41 tag for compatibility with modern Ubuntu
-          wails build -platform linux/amd64 -tags webkit2gtk41
+          wails build -platform linux/amd64
           cd build/bin
           tar -czvf ArchivumMarkdown-Linux.tar.gz ArchivumMarkdown
 
@@ -84,7 +85,8 @@ jobs:
             build/bin/ArchivumMarkdown-Installer.exe
             build/bin/ArchivumMarkdown.dmg
             build/bin/ArchivumMarkdown-Linux.tar.gz
-          draft: true
+          fail_on_unmatched_files: false
+          draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

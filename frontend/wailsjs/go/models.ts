@@ -30,6 +30,22 @@ export namespace main {
 	        this.syncScroll = source["syncScroll"];
 	    }
 	}
+	export class UpdateInfo {
+	    available: boolean;
+	    latestVersion: string;
+	    downloadUrl: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.available = source["available"];
+	        this.latestVersion = source["latestVersion"];
+	        this.downloadUrl = source["downloadUrl"];
+	    }
+	}
 
 }
 
