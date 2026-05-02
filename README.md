@@ -5,10 +5,7 @@
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jurgenjacobsen/archivum-markdown/main)
 ![GitHub top language](https://img.shields.io/github/languages/top/jurgenjacobsen/archivum-markdown)
 ![GitHub repo size](https://img.shields.io/github/repo-size/jurgenjacobsen/archivum-markdown)
-<<<<<<< HEAD
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/jurgenjacobsen/archivum-markdown/total)
-=======
->>>>>>> 69b64e9c3b2de2697b887e1bca0af9144ac8fbbe
 
 # Archivum Markdown
 **Archivum Markdown** is a high-performance desktop Markdown editor designed for speed, simplicity, and focus. Built with Wails, it combines the power of Go with the flexibility of React and TypeScript to provide a seamless writing experience.
