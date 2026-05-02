@@ -55,6 +55,15 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
+### Updates
+```
+   1. Push your changes.
+   2. Create a new tag: git tag v1.0.3 (or any version higher than 1.0.2).
+   3. Push the tag: git push origin v1.0.3.
+   4. The GitHub Action will trigger, build the installers, and create a release.
+   5. Existing users running v1.0.2 will see the update notification the next time they open the app.
+```
+
 The resulting binary will be located in the `build/bin` directory.
 
 ## Project Structure

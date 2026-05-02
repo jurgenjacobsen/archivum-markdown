@@ -44,21 +44,23 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev build-essential libwebkit2gtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev build-essential
 
       - name: Build Windows
         if: runner.os == 'Windows'
         run: |
-          wails build -platform windows/amd64 -package
-          # The installer is usually named something like ArchivumMarkdown-amd64-installer.exe
-          # Let's rename it for consistency
-          mv build/bin/*installer.exe build/bin/ArchivumMarkdown-Installer.exe || true
+          wails build -platform windows/amd64 -nsis
+          # The installer is created in build/bin
+          # It usually has a name like ArchivumMarkdown-amd64-installer.exe
+          cd build/bin
+          mv *installer.exe ArchivumMarkdown-Installer.exe || true
 
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: |
-          wails build -platform darwin/universal -package
-          # Use create-dmg to make a nice installer
+          wails build -platform darwin/universal
+          # Wails creates ArchivumMarkdown.app in build/bin
+          # We'll use create-dmg to make a nice installer
           npm install -g create-dmg
           create-dmg build/bin/ArchivumMarkdown.app build/bin/ || true
           mv build/bin/*.dmg build/bin/ArchivumMarkdown.dmg || true
@@ -67,7 +69,6 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           wails build -platform linux/amd64
-          # Packaging for Linux as a .tar.gz for now, or could use extra tools for .deb
           cd build/bin
           tar -czvf ArchivumMarkdown-Linux.tar.gz ArchivumMarkdown
 
