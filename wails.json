@@ -11,6 +11,7 @@
         "name": "Jürgen Jacobsen",
         "email": "jurgenjacobsen@outlook.com"
     },
+    "version": "1.0.2",
     "description": "A high-performance desktop Markdown editor built with Wails, Go, React, and TypeScript.",
     "info": {
         "company": "Archivum",
@@ -18,7 +19,6 @@
         "name": "Archivum Markdown",
         "description": "A high-performance desktop Markdown editor built with Wails, Go, React, and TypeScript.",
         "category": "Editor",
-        "version": "1.0.2",
         "copyright": "Copyright (c) 2025 Archivum. All rights reserved.",
         "author": "Jürgen Jacobsen",
         "website": "https://jurgen.fyi/projects",
