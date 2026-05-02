@@ -84,7 +84,7 @@ jobs:
             build/bin/ArchivumMarkdown-Installer.exe
             build/bin/ArchivumMarkdown.dmg
             build/bin/ArchivumMarkdown-Linux.tar.gz
-          draft: false
+          draft: true
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
