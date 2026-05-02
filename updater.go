@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,11 +11,23 @@ import (
 	"github.com/blang/semver"
 )
 
+//go:embed wails.json
+var wailsConfig []byte
+
 const (
-	owner   = "jurgenjacobsen"
-	repo    = "archivum-markdown"
-	version = "1.0.2"
+	owner = "jurgenjacobsen"
+	repo  = "archivum-markdown"
 )
+
+func getAppVersion() string {
+	var config struct {
+		Version string `json:"version"`
+	}
+	if err := json.Unmarshal(wailsConfig, &config); err != nil {
+		return "0.0.0"
+	}
+	return config.Version
+}
 
 type Release struct {
 	TagName string `json:"tag_name"`
@@ -50,7 +63,8 @@ func (a *App) CheckForUpdates() (UpdateInfo, error) {
 		return UpdateInfo{}, err
 	}
 
-	currentV, err := semver.Parse(strings.TrimPrefix(version, "v"))
+	currentVersion := getAppVersion()
+	currentV, err := semver.Parse(strings.TrimPrefix(currentVersion, "v"))
 	if err != nil {
 		return UpdateInfo{}, err
 	}
