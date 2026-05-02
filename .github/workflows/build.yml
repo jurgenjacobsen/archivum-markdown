@@ -48,19 +48,23 @@ jobs:
 
       - name: Build Windows
         if: runner.os == 'Windows'
+        shell: pwsh
         run: |
           wails build -platform windows/amd64 -nsis
-          # The installer is created in build/bin
-          # It usually has a name like ArchivumMarkdown-amd64-installer.exe
-          cd build/bin
-          mv *installer.exe ArchivumMarkdown-Installer.exe || true
+          # In Wails v2, the installer is usually named [ProjectName]-amd64-installer.exe
+          # We search for it and rename it to a clean name
+          $installer = Get-ChildItem -Path build/bin -Filter "*installer.exe" | Select-Object -First 1
+          if ($installer) {
+            Move-Item -Path $installer.FullName -Destination "build/bin/ArchivumMarkdown-Installer.exe" -Force
+          } else {
+            Write-Error "Installer not found in build/bin"
+          }
 
       - name: Build MacOS
         if: runner.os == 'macOS'
         run: |
           wails build -platform darwin/universal
           # Wails creates ArchivumMarkdown.app in build/bin
-          # We'll use create-dmg to make a nice installer
           npm install -g create-dmg
           create-dmg build/bin/ArchivumMarkdown.app build/bin/ || true
           mv build/bin/*.dmg build/bin/ArchivumMarkdown.dmg || true
@@ -68,7 +72,8 @@ jobs:
       - name: Build Linux
         if: runner.os == 'Linux'
         run: |
-          wails build -platform linux/amd64
+          # Use webkit2gtk41 tag for compatibility with modern Ubuntu
+          wails build -platform linux/amd64 -tags webkit2gtk41
           cd build/bin
           tar -czvf ArchivumMarkdown-Linux.tar.gz ArchivumMarkdown
 
