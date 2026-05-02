@@ -78,12 +78,17 @@ func (a *App) SaveSettings(settings Settings, workspacePath string) error {
 	var path string
 	var err error
 
+	// Default to global path
+	path, err = getGlobalSettingsPath()
+	if err != nil {
+		return err
+	}
+
+	// Only save to workspace if the settings file ALREADY exists there
 	if workspacePath != "" {
-		path = getWorkspaceSettingsPath(workspacePath)
-	} else {
-		path, err = getGlobalSettingsPath()
-		if err != nil {
-			return err
+		wsPath := getWorkspaceSettingsPath(workspacePath)
+		if _, err := os.Stat(wsPath); err == nil {
+			path = wsPath
 		}
 	}
 
