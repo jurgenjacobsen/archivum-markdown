@@ -3,7 +3,8 @@ import { Sidebar } from './components/Sidebar';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
 import { Modal } from './components/Modal';
-import { ReadFile, SaveFile, GetSettings, SaveSettings } from '../wailsjs/go/main/App';
+import { ReadFile, SaveFile, GetSettings, SaveSettings, CheckForUpdates } from '../wailsjs/go/main/App';
+import { BrowserOpenURL } from '../wailsjs/runtime/runtime';
 
 function App() {
   const [workspaceRoot, setWorkspaceRoot] = useState('');
@@ -13,6 +14,27 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
+
+  // Check for updates
+  useEffect(() => {
+    const checkUpdates = async () => {
+      try {
+        const info = await CheckForUpdates();
+        if (info.available) {
+          showConfirm(
+            "Update Available", 
+            `A new version (${info.latestVersion}) is available. Would you like to download it now?`,
+            () => {
+              BrowserOpenURL(info.downloadUrl);
+            }
+          );
+        }
+      } catch (err) {
+        console.error("Error checking for updates:", err);
+      }
+    };
+    checkUpdates();
+  }, []);
 
   // Load settings
   useEffect(() => {

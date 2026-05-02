@@ -3,6 +3,7 @@ module markdown-archivum
 go 1.23.0
 
 require (
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/fsnotify/fsnotify v1.10.0
 	github.com/wailsapp/wails/v2 v2.12.0
 )
