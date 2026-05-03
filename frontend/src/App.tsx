@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { Toolbar } from './components/Toolbar';
 import { Editor } from './components/Editor';
 import { Modal } from './components/Modal';
-import { ReadFile, SaveFile, GetSettings, SaveSettings, CheckForUpdates } from '../wailsjs/go/main/App';
+import { ReadFile, SaveFile, GetSettings, SaveSettings, CheckForUpdates, GetInitialFile } from '../wailsjs/go/main/App';
 import { BrowserOpenURL } from '../wailsjs/runtime/runtime';
 
 function App() {
@@ -14,6 +14,22 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [syncScroll, setSyncScroll] = useState(true);
+
+  // Check for initial file
+  useEffect(() => {
+    const checkInitialFile = async () => {
+      try {
+        const initial = await GetInitialFile();
+        if (initial && initial.path) {
+          setWorkspaceRoot(initial.parent);
+          handleFileSelect(initial.path);
+        }
+      } catch (err) {
+        console.error("Error checking for initial file:", err);
+      }
+    };
+    checkInitialFile();
+  }, []);
 
   // Check for updates
   useEffect(() => {

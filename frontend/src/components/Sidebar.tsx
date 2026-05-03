@@ -397,6 +397,12 @@ export const Sidebar = ({
   };
 
   useEffect(() => {
+    if (workspaceRoot) {
+      loadRoot(workspaceRoot);
+    }
+  }, [workspaceRoot, loadRoot]);
+
+  useEffect(() => {
     if (!workspaceRoot) return;
 
     const unsubscribe = EventsOn('workspace-update', (parentPath: string) => {

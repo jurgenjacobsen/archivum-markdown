@@ -13,13 +13,31 @@ import (
 
 // App struct
 type App struct {
-	ctx     context.Context
-	watcher *fsnotify.Watcher
+	ctx         context.Context
+	watcher     *fsnotify.Watcher
+	initialFile string
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
+}
+
+// InitialFile represents the file passed via command line
+type InitialFile struct {
+	Path   string `json:"path"`
+	Parent string `json:"parent"`
+}
+
+// GetInitialFile returns the file path passed via command line
+func (a *App) GetInitialFile() *InitialFile {
+	if a.initialFile == "" {
+		return nil
+	}
+	return &InitialFile{
+		Path:   a.initialFile,
+		Parent: filepath.Dir(a.initialFile),
+	}
 }
 
 // startup is called when the app starts. The context is saved
